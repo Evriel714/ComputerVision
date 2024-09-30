@@ -1,5 +1,4 @@
 import os
-
 import cv2
 
 
@@ -7,10 +6,10 @@ DATA_DIR = './data'
 if not os.path.exists(DATA_DIR):
     os.makedirs(DATA_DIR)
 
-number_of_classes = 3
-dataset_size = 100
+number_of_classes = 2
+dataset_size = 50
 
-cap = cv2.VideoCapture(2)
+cap = cv2.VideoCapture(0)
 for j in range(number_of_classes):
     if not os.path.exists(os.path.join(DATA_DIR, str(j))):
         os.makedirs(os.path.join(DATA_DIR, str(j)))
@@ -31,7 +30,11 @@ for j in range(number_of_classes):
         ret, frame = cap.read()
         cv2.imshow('frame', frame)
         cv2.waitKey(25)
+
         cv2.imwrite(os.path.join(DATA_DIR, str(j), '{}.jpg'.format(counter)), frame)
+
+        flipped_frame = cv2.flip(frame, 1)  # 1 for horizontal flip
+        cv2.imwrite(os.path.join(DATA_DIR, str(j), '{}.jpg'.format(counter * 2 + 1)), flipped_frame)
 
         counter += 1
 
