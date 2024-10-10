@@ -45,9 +45,8 @@
 import os
 import cv2
 import mediapipe as mp
-import numpy as np  # Import numpy for creating blank images
+import numpy as np  
 
-# Initialize Mediapipe Hands model
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(min_detection_confidence=0.5)
 
@@ -55,11 +54,16 @@ DATA_DIR = './data'
 if not os.path.exists(DATA_DIR):
     os.makedirs(DATA_DIR)
 
-number_of_classes = 2
-dataset_size = 10
+number_of_classes = 32
+dataset_size = 50
+
+# target = 33
 
 cap = cv2.VideoCapture(0)
 for j in range(number_of_classes):
+    # if j!=target:
+    #     continue
+
     if not os.path.exists(os.path.join(DATA_DIR, str(j))):
         os.makedirs(os.path.join(DATA_DIR, str(j)))
 
@@ -74,6 +78,7 @@ for j in range(number_of_classes):
             break
 
     counter = 0
+    image_num = 100
     while counter < dataset_size:
         ret, frame = cap.read()
 
@@ -96,7 +101,7 @@ for j in range(number_of_classes):
                 current_height = y_max - y_min
 
                 # Calculate the desired size
-                desired_size = 240
+                desired_size = 300
 
                 # Calculate the padding required to achieve the desired size
                 padding_x = max(0, (desired_size - current_width) // 2)
@@ -131,11 +136,13 @@ for j in range(number_of_classes):
                     cropped_hand = cropped_hand[:desired_size, :desired_size]
 
                 # Save the cropped image
-                cv2.imwrite(os.path.join(DATA_DIR, str(j), '{}.jpg'.format(counter)), cropped_hand)
+                cv2.imwrite(os.path.join(DATA_DIR, str(j), '{}.jpg'.format(image_num)), cropped_hand)
+                image_num += 1
 
                 # Flip the image horizontally and save
                 flipped_hand = cv2.flip(cropped_hand, 1)
-                cv2.imwrite(os.path.join(DATA_DIR, str(j), '{}.jpg'.format(counter * 2 + 1)), flipped_hand)
+                cv2.imwrite(os.path.join(DATA_DIR, str(j), '{}.jpg'.format(image_num)), flipped_hand)
+                image_num += 1
 
                 counter += 1
 
