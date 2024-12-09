@@ -54,13 +54,13 @@ DATA_DIR = './data'
 if not os.path.exists(DATA_DIR):
     os.makedirs(DATA_DIR)
 
-number_of_classes = 32
+number_of_classes = 33
 dataset_size = 50
 
 # target = 33
 
-cap = cv2.VideoCapture(0)
-for j in range(number_of_classes):
+cap = cv2.VideoCapture(1)
+for j in range(1, number_of_classes):
     # if j!=target:
     #     continue
 
@@ -78,7 +78,7 @@ for j in range(number_of_classes):
             break
 
     counter = 0
-    image_num = 100
+    image_num = 300
     while counter < dataset_size:
         ret, frame = cap.read()
 
