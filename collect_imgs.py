@@ -50,12 +50,12 @@ import numpy as np
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(min_detection_confidence=0.5)
 
-DATA_DIR = './data'
+DATA_DIR = './data/test'
 if not os.path.exists(DATA_DIR):
     os.makedirs(DATA_DIR)
 
-number_of_classes = 32
-dataset_size = 50
+number_of_classes = 33
+dataset_size = 10
 
 # target = 33
 
@@ -78,7 +78,7 @@ for j in range(number_of_classes):
             break
 
     counter = 0
-    image_num = 100
+    image_num = 60
     while counter < dataset_size:
         ret, frame = cap.read()
 
