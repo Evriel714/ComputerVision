@@ -19,7 +19,6 @@ labels = []
 for dir_ in os.listdir(DATA_DIR):
     for img_path in os.listdir(os.path.join(DATA_DIR, dir_)):
         data_aux = []
-
         x_ = []
         y_ = []
 
@@ -28,23 +27,29 @@ for dir_ in os.listdir(DATA_DIR):
 
         results = hands.process(img_rgb)
         if results.multi_hand_landmarks:
-            for hand_landmarks in results.multi_hand_landmarks:
-                for i in range(len(hand_landmarks.landmark)):
-                    x = hand_landmarks.landmark[i].x
-                    y = hand_landmarks.landmark[i].y
+            # Process only the first hand
+            hand_landmarks = results.multi_hand_landmarks[0]
 
-                    x_.append(x)
-                    y_.append(y)
+            for i in range(len(hand_landmarks.landmark)):
+                x = hand_landmarks.landmark[i].x
+                y = hand_landmarks.landmark[i].y
 
-                for i in range(len(hand_landmarks.landmark)):
-                    x = hand_landmarks.landmark[i].x
-                    y = hand_landmarks.landmark[i].y
-                    data_aux.append(x - min(x_))
-                    data_aux.append(y - min(y_))
+                x_.append(x)
+                y_.append(y)
 
-            data.append(data_aux)
-            labels.append(dir_)
+            for i in range(len(hand_landmarks.landmark)):
+                x = hand_landmarks.landmark[i].x
+                y = hand_landmarks.landmark[i].y
+                data_aux.append(x - min(x_))
+                data_aux.append(y - min(y_))
 
-f = open('data.pickle', 'wb')
-pickle.dump({'data': data, 'labels': labels}, f)
-f.close()
+            # Ensure only processed data is appended
+            if len(data_aux) == 42:  # Validate feature length
+                data.append(data_aux)
+                labels.append(dir_)
+        else:
+            print(f"No hand detected in {img_path}. Skipping.")
+
+# Save data to pickle
+with open('data.pickle', 'wb') as f:
+    pickle.dump({'data': data, 'labels': labels}, f)
